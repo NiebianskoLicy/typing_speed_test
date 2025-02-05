@@ -1,29 +1,48 @@
-import tkinter
 from tkinter import *
-import random
 import json
-import time
 
 window = Tk()
 window.title("Typing Speed Test")
-window.geometry("700x450")
+window.geometry("720x450")
 
 font = ("Arial", 14)
 timer = 60
 
-# TODO 1: fix countdown
-# TODO 2: create word count
+# TODO 2: fix word count
 # TODO 3: finish after reaching to 0 seconds
 
 with open("words.json", "r") as f:
      text = json.load(f)["text"]
 
+
 def start_timer(timer):
     user_text.config(state=NORMAL)
-    window.after(1000, start_timer, timer)
+    countdown_text.after(1000,start_timer, timer-1)
     timer -= 1
-    countdown_text.config(text=f"{timer}")
+    countdown_text.config(text=f"Countdown:\n{timer}")
 
+    word_per_sec = word_count()/(timer/60)
+    wps_text = Label(window, text=f"WPS:\n {word_per_sec}", font=("Arial", 14))
+    wps_text.after(1000, word_count, )
+    wps_text.place(x=605, y=200)
+
+
+def word_count():
+    word_per_sec = 0
+    count_text = user_text.get("1.0", END)
+    word = ""
+    print(word_per_sec)
+    for letter in count_text:
+        word += letter
+        if letter == " ":
+            word = ""
+            if word in text:
+                word_per_sec += 1
+                return word_per_sec
+    return word_per_sec
+
+
+#typping speed test
 typ_sp_text = Text(window, height=8, width=50, font=font, wrap=WORD)
 typ_sp_text.insert(END, text)
 typ_sp_text.place(x=10, y=10)
